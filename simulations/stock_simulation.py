@@ -2,10 +2,11 @@
 import numpy as np
 import pandas as pd
 import yfinance as yf
+import matplotlib.pyplot as plt
 
 # 変数の定義
-mu = 0.01  # 期待収益率
-sigma = 0.03  # ボラティリティ
+mu = 0.0005  # 期待収益率（小さめに設定）
+sigma = 0.02  # ボラティリティ（小さめに設定）
 dt = 1 / 252  # 時間刻み（1日）
 
 def get_stock_data(tickers, start_date, end_date):
@@ -31,12 +32,44 @@ assets = [
     {
         "name": "asset" + str(i),
         "param": {
-            "mu": mu * i,
-            "sigma": sigma * i,
+            "mu": mu * (i + 1),  # muを資産ごとに調整
+            "sigma": sigma * (i + 1),  # sigmaを資産ごとに調整
             "S0": 100,
             "dt": dt,
-            "T": 30,
+            "T": 252,  # シミュレーション期間を1年に設定
         },
     }
     for i in range(10)
 ]
+
+# リターンとボラティリティの計算
+returns = []
+volatilities = []
+
+for asset in assets:
+    mu = asset["param"]["mu"]
+    sigma = asset["param"]["sigma"]
+    # シミュレーションの実行（例としてランダムウォーク）
+    prices = [asset["param"]["S0"]]
+    for _ in range(asset["param"]["T"]):
+        price = prices[-1] * np.exp(np.random.normal(mu * dt, sigma * np.sqrt(dt)))
+        prices.append(price)
+    
+    # 最終価格からリターンとボラティリティを計算
+    final_return = (prices[-1] - prices[0]) / prices[0]
+    volatility = np.std(prices) / prices[0]
+    
+    returns.append(final_return)
+    volatilities.append(volatility)
+
+# プロット
+plt.figure(figsize=(10, 6))
+plt.scatter(volatilities, returns, marker='o')  # 線を引かずに散布図を作成
+for i, asset in enumerate(assets):
+    plt.annotate(asset["name"], (volatilities[i], returns[i]))
+
+plt.title('Return vs Volatility')
+plt.xlabel('Volatility')
+plt.ylabel('Return')
+plt.grid()
+plt.show()
