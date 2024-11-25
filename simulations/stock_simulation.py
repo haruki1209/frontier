@@ -27,19 +27,19 @@ df = get_stock_data(tickers, start_date, end_date)
 # データの確認
 print(df.head())
 
-# 資産の設定
+# より現実的な資産パラメータの設定
 assets = [
     {
         "name": "asset" + str(i),
         "param": {
-            "mu": mu * (i + 1),  # muを資産ごとに調整
-            "sigma": sigma * (i + 1),  # sigmaを資産ごとに調整
+            "mu": np.random.uniform(0.0001, 0.001),  # ランダムな期待収益率
+            "sigma": np.random.uniform(0.01, 0.03),  # ランダムなボラティリティ
             "S0": 100,
             "dt": dt,
-            "T": 252,  # シミュレーション期間を1年に設定
+            "T": 365,
         },
     }
-    for i in range(10)
+    for i in range(100)
 ]
 
 # リターンとボラティリティの計算

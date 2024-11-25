@@ -7,7 +7,18 @@ from scipy.optimize import minimize
 from simulations.stock_simulation import get_stock_data
 
 # Yahoo Financeから株価データを取得
-tickers = ["AAPL", "MSFT", "GOOGL"]  # 取得する株式のティッカーを指定
+tickers = [
+    "AAPL",   # Apple
+    "MSFT",   # Microsoft
+    "GOOGL",  # Google
+    "AMZN",   # Amazon
+    "META",   # Meta (Facebook)
+    "NVDA",   # NVIDIA
+    "JPM",    # JPMorgan Chase
+    "JNJ",    # Johnson & Johnson
+    "PG",     # Procter & Gamble
+    "KO"      # Coca-Cola
+]  # 取得する株式のティッカーを指定
 start_date = "2021-01-01"  # 取得開始日
 end_date = "2023-12-31"  # 取得終了日
 df = get_stock_data(tickers, start_date, end_date)  # 株価データの取得
@@ -26,6 +37,7 @@ def calculate_returns_and_volatility(df):
     return summary
 
 summary = calculate_returns_and_volatility(df)
+print(summary)
 
 # ポートフォリオのリターンを計算
 def portfolio_return(weights, df):
@@ -67,7 +79,7 @@ for target_cagr in target_cagr_list:
 
 # 結果をプロット
 plt.figure(figsize=(15, 8))
-plt.scatter(volatilities, target_cagr_list, color='red', label='Efficient Frontier')  # 効率的フロンティア
+plt.plot(volatilities, target_cagr_list, color='red', label='Efficient Frontier')  # 効率的フロンティアを線で表示
 plt.scatter([value["volatility"] for value in summary.values()], [value["return"] for value in summary.values()], color='blue', label='Assets')  # 各資産
 
 # ラベルを付ける
